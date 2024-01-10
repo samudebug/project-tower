@@ -1,4 +1,8 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tower_project/ui/pages/project_form/cubit/project_form_cubit.dart';
 import 'package:tower_project/ui/pages/project_form/widgets/members_form.dart';
 import 'package:tower_project/ui/pages/project_form/widgets/name_image_form.dart';
 
@@ -12,6 +16,7 @@ class ProjectFormPage extends StatefulWidget {
 class _ProjectFormPageState extends State<ProjectFormPage> {
   final PageController controller = PageController();
   int currentPage = 0;
+  late ProjectFormCubit cubit = ProjectFormCubit(projectsBloc: context.read());
   @override
   Widget build(BuildContext context) {
     return PopScope(
@@ -27,10 +32,16 @@ class _ProjectFormPageState extends State<ProjectFormPage> {
       },
       child: Scaffold(
         floatingActionButton: FloatingActionButton.extended(
-          onPressed: () {
-            controller.nextPage(
+          onPressed: () async {
+            if (currentPage == 0) {
+              controller.nextPage(
                 duration: Duration(milliseconds: 500),
                 curve: Curves.decelerate);
+            }
+            if (currentPage == 1) {
+              await cubit.saveProject();
+              Navigator.of(context).pop();
+            }
           },
           label: Text(
             currentPage == 1 ? "Finalizar" : "Próximo",
@@ -93,14 +104,17 @@ class _ProjectFormPageState extends State<ProjectFormPage> {
             )
           ],
         ),
-        body: PageView(
-          onPageChanged: (page) {
-            setState(() {
-              currentPage = page;
-            });
-          },
-          controller: controller,
-          children: [NameImageForm(), MembersForm()],
+        body: BlocProvider(
+          create: (_) => cubit,
+          child: PageView(
+            onPageChanged: (page) {
+              setState(() {
+                currentPage = page;
+              });
+            },
+            controller: controller,
+            children: [NameImageForm(), MembersForm()],
+          ),
         ),
       ),
     );

@@ -10,22 +10,6 @@ class MembersForm extends StatefulWidget {
 }
 
 class _MembersFormState extends State<MembersForm> {
-  List<DragAndDropListInterface> _contents = List.generate(10, (index) {
-    return DragAndDropList(
-      header: Text('Header $index'),
-      children: <DragAndDropItem>[
-        DragAndDropItem(
-          child: Text('$index.1'),
-        ),
-        DragAndDropItem(
-          child: Text('$index.2'),
-        ),
-        DragAndDropItem(
-          child: Text('$index.3'),
-        ),
-      ],
-    );
-  });
 
   @override
   Widget build(BuildContext context) {

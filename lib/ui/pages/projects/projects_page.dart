@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:projects_repository/projects_repository.dart';
+import 'package:tower_project/blocs/projects_bloc/projects_bloc.dart';
 import 'package:tower_project/ui/pages/project_form/project_form_page.dart';
 import 'package:tower_project/ui/pages/projects/widgets/project_card.dart';
 
@@ -7,6 +10,7 @@ class ProjectsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    context.read<ProjectsBloc>().add(LoadProjects());
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
@@ -19,7 +23,8 @@ class ProjectsPage extends StatelessWidget {
         actions: [
           IconButton(
               onPressed: () {
-                Navigator.of(context).push(MaterialPageRoute(builder: (context) => ProjectFormPage()));
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => ProjectFormPage()));
               },
               icon: Icon(
                 Icons.add,
@@ -35,7 +40,9 @@ class ProjectsPage extends StatelessWidget {
                     "Logout",
                     style: Theme.of(context).textTheme.labelLarge,
                   ),
-                  SizedBox(width: 50,)
+                  SizedBox(
+                    width: 50,
+                  )
                 ],
               ))
             ],
@@ -48,12 +55,25 @@ class ProjectsPage extends StatelessWidget {
                       controller.open();
                     }
                   },
-                  child: Icon(Icons.person, color: Theme.of(context).iconTheme.color,));
+                  child: Icon(
+                    Icons.person,
+                    color: Theme.of(context).iconTheme.color,
+                  ));
             },
           )
         ],
       ),
-      body: GridView.count(crossAxisCount: 7, children: [ProjectCard(),ProjectCard(),ProjectCard(),ProjectCard(),]),
+      body: BlocBuilder<ProjectsBloc, ProjectsState>(
+        builder: (context, state) {
+          if (state is ProjectsReady) {
+            return GridView.count(crossAxisCount: 7, children: state.projects.map((e) => ProjectCard(project: e)).toList());
+          }
+          if (state is ProjectsFailed) {
+            return Center(child: Column(children: [Icon(Icons.info, size: 40, color: Colors.red,), Text("Um erro ocorreu", style: Theme.of(context).textTheme.displayLarge,)]),);
+          }
+          return Center(child: CircularProgressIndicator(),);
+        }
+      ),
     );
   }
 }

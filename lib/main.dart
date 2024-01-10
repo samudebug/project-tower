@@ -1,61 +1,77 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:projects_repository/projects_repository.dart';
+import 'package:tower_project/blocs/projects_bloc/projects_bloc.dart';
 import 'package:tower_project/ui/pages/projects/projects_page.dart';
+import 'firebase_options.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  final ProjectsRepository projectsRepository = ProjectsRepository();
+  runApp(MyApp(projectsRepository: projectsRepository,));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
+  MyApp({super.key, required this.projectsRepository});
+  ProjectsRepository projectsRepository;
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      themeMode: ThemeMode.dark,
-      darkTheme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.red, brightness: Brightness.dark),
-        brightness: Brightness.dark,
-        useMaterial3: true,
+    return MultiRepositoryProvider(
+      providers: [
+        RepositoryProvider(create: (_) => projectsRepository),
+      ],
+      child: MultiBlocProvider(
+        providers: [BlocProvider(create: (context) => ProjectsBloc(projectsRepository: context.read<ProjectsRepository>()))],
+        child: MaterialApp(
+          title: 'Flutter Demo',
+          themeMode: ThemeMode.dark,
+          darkTheme: ThemeData(
+            // This is the theme of your application.
+            //
+            // TRY THIS: Try running your application with "flutter run". You'll see
+            // the application has a purple toolbar. Then, without quitting the app,
+            // try changing the seedColor in the colorScheme below to Colors.green
+            // and then invoke "hot reload" (save your changes or press the "hot
+            // reload" button in a Flutter-supported IDE, or press "r" if you used
+            // the command line to start the app).
+            //
+            // Notice that the counter didn't reset back to zero; the application
+            // state is not lost during the reload. To reset the state, use hot
+            // restart instead.
+            //
+            // This works for code too, not just values: Most code changes can be
+            // tested with just a hot reload.
+            colorScheme: ColorScheme.fromSeed(seedColor: Colors.red, brightness: Brightness.dark),
+            brightness: Brightness.dark,
+            useMaterial3: true,
+          ),
+          theme: ThemeData(
+            // This is the theme of your application.
+            //
+            // TRY THIS: Try running your application with "flutter run". You'll see
+            // the application has a purple toolbar. Then, without quitting the app,
+            // try changing the seedColor in the colorScheme below to Colors.green
+            // and then invoke "hot reload" (save your changes or press the "hot
+            // reload" button in a Flutter-supported IDE, or press "r" if you used
+            // the command line to start the app).
+            //
+            // Notice that the counter didn't reset back to zero; the application
+            // state is not lost during the reload. To reset the state, use hot
+            // restart instead.
+            //
+            // This works for code too, not just values: Most code changes can be
+            // tested with just a hot reload.
+            colorScheme: ColorScheme.fromSeed(seedColor: Colors.red),
+            
+            useMaterial3: true,
+          ),
+          debugShowCheckedModeBanner: false,
+          home: const ProjectsPage(),
+        ),
       ),
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.red),
-        
-        useMaterial3: true,
-      ),
-      debugShowCheckedModeBanner: false,
-      home: const ProjectsPage(),
     );
   }
 }
