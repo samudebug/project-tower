@@ -1,9 +1,7 @@
-import 'package:drag_and_drop_lists/drag_and_drop_list_interface.dart';
 import 'package:flutter/material.dart';
-import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 
 class MembersForm extends StatefulWidget {
-  MembersForm({super.key});
+  const MembersForm({super.key});
 
   @override
   State<MembersForm> createState() => _MembersFormState();
@@ -18,7 +16,7 @@ class _MembersFormState extends State<MembersForm> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Expanded(
+          Flexible(
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Container(
@@ -36,11 +34,11 @@ class _MembersFormState extends State<MembersForm> {
                               style: Theme.of(context).textTheme.titleLarge,
                             ),
                             IconButton(
-                                onPressed: () {}, icon: Icon(Icons.person_add))
+                                onPressed: () {}, icon: const Icon(Icons.person_add))
                           ],
                         ),
                       ),
-                      Divider(
+                      const Divider(
                         height: 2,
                       ),
                       ListTile(
@@ -52,7 +50,7 @@ class _MembersFormState extends State<MembersForm> {
                           style: Theme.of(context).textTheme.titleMedium,
                         ),
                         trailing: IconButton(
-                          icon: Icon(Icons.clear),
+                          icon: const Icon(Icons.clear),
                           onPressed: () {},
                         ),
                       )
@@ -60,7 +58,7 @@ class _MembersFormState extends State<MembersForm> {
                   )),
             ),
           ),
-          Expanded(
+          Flexible(
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Container(
@@ -78,11 +76,11 @@ class _MembersFormState extends State<MembersForm> {
                               style: Theme.of(context).textTheme.titleLarge,
                             ),
                             IconButton(
-                                onPressed: () {}, icon: Icon(Icons.person_add))
+                                onPressed: () {}, icon: const Icon(Icons.person_add))
                           ],
                         ),
                       ),
-                      Divider(
+                      const Divider(
                         height: 2,
                       ),
                       ListTile(
@@ -94,7 +92,7 @@ class _MembersFormState extends State<MembersForm> {
                           style: Theme.of(context).textTheme.titleMedium,
                         ),
                         trailing: IconButton(
-                          icon: Icon(Icons.clear),
+                          icon: const Icon(Icons.clear),
                           onPressed: () {},
                         ),
                       )

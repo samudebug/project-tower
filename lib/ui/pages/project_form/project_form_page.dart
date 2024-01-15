@@ -1,4 +1,3 @@
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,7 +6,7 @@ import 'package:tower_project/ui/pages/project_form/widgets/members_form.dart';
 import 'package:tower_project/ui/pages/project_form/widgets/name_image_form.dart';
 
 class ProjectFormPage extends StatefulWidget {
-  ProjectFormPage({super.key});
+  const ProjectFormPage({super.key});
 
   @override
   State<ProjectFormPage> createState() => _ProjectFormPageState();
@@ -16,7 +15,7 @@ class ProjectFormPage extends StatefulWidget {
 class _ProjectFormPageState extends State<ProjectFormPage> {
   final PageController controller = PageController();
   int currentPage = 0;
-  late ProjectFormCubit cubit = ProjectFormCubit(projectsBloc: context.read());
+  late ProjectFormCubit cubit = ProjectFormCubit(projectsBloc: context.read(), storageRepository: context.read());
   @override
   Widget build(BuildContext context) {
     return PopScope(
@@ -27,7 +26,7 @@ class _ProjectFormPageState extends State<ProjectFormPage> {
         }
         if (currentPage == 1) {
           controller.previousPage(
-              duration: Duration(milliseconds: 500), curve: Curves.decelerate);
+              duration: const Duration(milliseconds: 500), curve: Curves.decelerate);
         }
       },
       child: Scaffold(
@@ -35,7 +34,7 @@ class _ProjectFormPageState extends State<ProjectFormPage> {
           onPressed: () async {
             if (currentPage == 0) {
               controller.nextPage(
-                duration: Duration(milliseconds: 500),
+                duration: const Duration(milliseconds: 500),
                 curve: Curves.decelerate);
             }
             if (currentPage == 1) {
@@ -48,18 +47,18 @@ class _ProjectFormPageState extends State<ProjectFormPage> {
             style: Theme.of(context).textTheme.titleSmall,
           ),
           icon: currentPage == 1
-              ? Icon(Icons.check)
-              : Icon(Icons.keyboard_arrow_right),
+              ? const Icon(Icons.check)
+              : const Icon(Icons.keyboard_arrow_right),
         ),
         appBar: AppBar(
           backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
           centerTitle: true,
           leading: IconButton(
-            icon: Icon(Icons.arrow_back),
+            icon: const Icon(Icons.arrow_back),
             onPressed: () {
               if (currentPage == 1) {
                 controller.previousPage(
-                    duration: Duration(milliseconds: 500),
+                    duration: const Duration(milliseconds: 500),
                     curve: Curves.decelerate);
               } else {
                 Navigator.of(context).pop();
@@ -76,12 +75,12 @@ class _ProjectFormPageState extends State<ProjectFormPage> {
                 MenuItemButton(
                     child: Row(
                   children: [
-                    Icon(Icons.logout),
+                    const Icon(Icons.logout),
                     Text(
                       "Logout",
                       style: Theme.of(context).textTheme.labelLarge,
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 50,
                     )
                   ],
@@ -113,7 +112,7 @@ class _ProjectFormPageState extends State<ProjectFormPage> {
               });
             },
             controller: controller,
-            children: [NameImageForm(), MembersForm()],
+            children: const [NameImageForm(), MembersForm()],
           ),
         ),
       ),

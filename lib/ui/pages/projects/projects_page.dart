@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:projects_repository/projects_repository.dart';
 import 'package:tower_project/blocs/projects_bloc/projects_bloc.dart';
+import 'package:tower_project/ui/pages/project_detail/project_detail_page.dart';
 import 'package:tower_project/ui/pages/project_form/project_form_page.dart';
 import 'package:tower_project/ui/pages/projects/widgets/project_card.dart';
 
@@ -24,7 +24,7 @@ class ProjectsPage extends StatelessWidget {
           IconButton(
               onPressed: () {
                 Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => ProjectFormPage()));
+                    MaterialPageRoute(builder: (context) => const ProjectFormPage()));
               },
               icon: Icon(
                 Icons.add,
@@ -35,12 +35,12 @@ class ProjectsPage extends StatelessWidget {
               MenuItemButton(
                   child: Row(
                 children: [
-                  Icon(Icons.logout),
+                  const Icon(Icons.logout),
                   Text(
                     "Logout",
                     style: Theme.of(context).textTheme.labelLarge,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 50,
                   )
                 ],
@@ -63,17 +63,45 @@ class ProjectsPage extends StatelessWidget {
           )
         ],
       ),
-      body: BlocBuilder<ProjectsBloc, ProjectsState>(
-        builder: (context, state) {
-          if (state is ProjectsReady) {
-            return GridView.count(crossAxisCount: 7, children: state.projects.map((e) => ProjectCard(project: e)).toList());
+      body: BlocBuilder<ProjectsBloc, ProjectsState>(builder: (context, state) {
+        if (state is ProjectsReady) {
+          if (state.projects.isEmpty) {
+            return const Center(child: Text("Sem projetos cadastrados. Você pode criar um projeto clicando no +"),);
           }
-          if (state is ProjectsFailed) {
-            return Center(child: Column(children: [Icon(Icons.info, size: 40, color: Colors.red,), Text("Um erro ocorreu", style: Theme.of(context).textTheme.displayLarge,)]),);
-          }
-          return Center(child: CircularProgressIndicator(),);
+          return GridView.count(
+              crossAxisCount: 7,
+              children: state.projects
+                  .map((e) => Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: InkWell(
+                            onTap: () => {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) =>
+                                          ProjectDetailsPage(project: e,)))
+                                },
+                            child: ProjectCard(project: e)),
+                      ))
+                  .toList());
         }
-      ),
+        if (state is ProjectsFailed) {
+          return Center(
+            child: Column(children: [
+              const Icon(
+                Icons.info,
+                size: 40,
+                color: Colors.red,
+              ),
+              Text(
+                "Um erro ocorreu",
+                style: Theme.of(context).textTheme.displayLarge,
+              )
+            ]),
+          );
+        }
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      }),
     );
   }
 }

@@ -2,6 +2,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:projects_repository/projects_repository.dart';
+import 'package:storage_repository/storage_repository.dart';
+import 'package:tasks_repository/tasks_repository.dart';
 import 'package:tower_project/blocs/projects_bloc/projects_bloc.dart';
 import 'package:tower_project/ui/pages/projects/projects_page.dart';
 import 'firebase_options.dart';
@@ -10,18 +12,25 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   final ProjectsRepository projectsRepository = ProjectsRepository();
-  runApp(MyApp(projectsRepository: projectsRepository,));
+  final StorageRepository storageRepository = StorageRepository();
+  final TaskRepository tasksRepository = TaskRepository();
+  runApp(MyApp(projectsRepository: projectsRepository, storageRepository: storageRepository, tasksRepository: tasksRepository,));
 }
 
 class MyApp extends StatelessWidget {
-  MyApp({super.key, required this.projectsRepository});
+  MyApp({super.key, required this.projectsRepository, required this.storageRepository, required this.tasksRepository});
   ProjectsRepository projectsRepository;
+  StorageRepository storageRepository;
+  TaskRepository tasksRepository;
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider(create: (_) => projectsRepository),
+        RepositoryProvider(create: (_) => storageRepository),
+        RepositoryProvider(create: (_) => tasksRepository),
+
       ],
       child: MultiBlocProvider(
         providers: [BlocProvider(create: (context) => ProjectsBloc(projectsRepository: context.read<ProjectsRepository>()))],

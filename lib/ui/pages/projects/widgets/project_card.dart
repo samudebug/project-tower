@@ -6,10 +6,22 @@ class ProjectCard extends StatelessWidget {
   final Project project;
   @override
   Widget build(BuildContext context) {
-    return  Column(
+    return Column(
       children: [
-        Expanded(flex: 9, child: Image(image: NetworkImage(project.imageUrl)),),
-        Expanded(child: Text(project.name, style: Theme.of(context).textTheme.titleMedium,))
+        Flexible(
+          flex: 9,
+          child: AspectRatio(
+            aspectRatio: 1/2,
+            child: project.imageUrl.isEmpty
+                ? Container(color: Colors.grey[400],)
+                : Image(image: NetworkImage(project.imageUrl), fit: BoxFit.cover,),
+          ),
+        ),
+        Flexible(
+            child: Text(
+          project.name,
+          style: Theme.of(context).textTheme.titleMedium,
+        ))
       ],
     );
   }
