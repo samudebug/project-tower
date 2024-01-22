@@ -19,7 +19,7 @@ class _TaskDetailPageState extends State<TaskDetailPage> {
   late final TaskDetailCubit cubit = TaskDetailCubit(
       taskRepository: context.read(),
       projectsRepository: context.read(),
-      task: widget.task);
+      task: widget.task)..fetchTaskMembers(widget.project.id!, widget.task.id!);
 
   @override
   Widget build(BuildContext context) {
@@ -185,11 +185,15 @@ class _TaskDetailPageState extends State<TaskDetailPage> {
                       children: [
                         Expanded(
                           child: TaskMembersSection(
+                            members: state.taskTranslators,
                             title: "Tradutor(es)",
+                            onRemove: (String memberId) async {
+                              cubit.removeMember(widget.project.id!, widget.task.id!, memberId);
+                            },
                             onAdd: () async {
                               final members = await cubit.fetchMembers(
                                   RoleInProject.TRANSLATOR, widget.project.id!);
-                              showDialog(
+                              final result = await showDialog<TaskMember>(
                                   context: context,
                                   builder: (context) => AlertDialog(
                                         title: Text("Selecionar Membro"),
@@ -202,26 +206,47 @@ class _TaskDetailPageState extends State<TaskDetailPage> {
                                                 child: ListView.builder(
                                                     shrinkWrap: true,
                                                     itemCount: members.length,
-                                                    itemBuilder: (context,
-                                                            index) =>
-                                                        ListTile(
-                                                          title: Text(members[index].username),
-                                                        )),
+                                                    itemBuilder:
+                                                        (context, index) =>
+                                                            ListTile(
+                                                              onTap: () {
+                                                                final member = TaskMember(
+                                                                    role: RoleInProject
+                                                                        .TRANSLATOR,
+                                                                    username: members[
+                                                                            index]
+                                                                        .username);
+                                                                Navigator.pop(
+                                                                    context,
+                                                                    member);
+                                                              },
+                                                              title: Text(
+                                                                  members[index]
+                                                                      .username),
+                                                            )),
                                               )
                                             ],
                                           ),
                                         ),
                                       ));
+                              if (result != null) {
+                                cubit.addMember(widget.project.id!,
+                                    widget.task.id!, result);
+                              }
                             },
                           ),
                         ),
                         Expanded(
                           child: TaskMembersSection(
                             title: "Revisor(es)",
+                            members: state.taskReviewers,
+                            onRemove: (String memberId) async {
+                              cubit.removeMember(widget.project.id!, widget.task.id!, memberId);
+                            },
                             onAdd: () async {
                               final members = await cubit.fetchMembers(
                                   RoleInProject.REVIEWER, widget.project.id!);
-                              showDialog(
+                              final result = await showDialog<TaskMember>(
                                   context: context,
                                   builder: (context) => AlertDialog(
                                         title: Text("Selecionar Membro"),
@@ -234,16 +259,33 @@ class _TaskDetailPageState extends State<TaskDetailPage> {
                                                 child: ListView.builder(
                                                     shrinkWrap: true,
                                                     itemCount: members.length,
-                                                    itemBuilder: (context,
-                                                            index) =>
-                                                        ListTile(
-                                                          title: Text(members[index].username),
-                                                        )),
+                                                    itemBuilder:
+                                                        (context, index) =>
+                                                            ListTile(
+                                                              onTap: () {
+                                                                final member = TaskMember(
+                                                                    role: RoleInProject
+                                                                        .REVIEWER,
+                                                                    username: members[
+                                                                            index]
+                                                                        .username);
+                                                                Navigator.pop(
+                                                                    context,
+                                                                    member);
+                                                              },
+                                                              title: Text(
+                                                                  members[index]
+                                                                      .username),
+                                                            )),
                                               )
                                             ],
                                           ),
                                         ),
                                       ));
+                              if (result != null) {
+                                cubit.addMember(widget.project.id!,
+                                    widget.task.id!, result);
+                              }
                             },
                           ),
                         ),
@@ -329,10 +371,16 @@ class TaskStatusSelector extends StatelessWidget {
 
 class TaskMembersSection extends StatelessWidget {
   const TaskMembersSection(
-      {super.key, required this.title, required this.onAdd});
+      {super.key,
+      required this.title,
+      required this.onAdd,
+      required this.members,
+      required this.onRemove});
 
   final String title;
   final void Function()? onAdd;
+  final List<TaskMember> members;
+  final void Function(String username) onRemove;
 
   @override
   Widget build(BuildContext context) {
@@ -347,13 +395,25 @@ class TaskMembersSection extends StatelessWidget {
           IconButton(onPressed: onAdd, icon: const Icon(Icons.add))
         ],
       ),
-      Text(
-        "Sem ${title.toLowerCase()} selecionados",
-        style: Theme.of(context)
-            .textTheme
-            .labelLarge
-            ?.copyWith(color: Colors.grey[500]),
-      )
+      if (members.isEmpty)
+        Text(
+          "Sem ${title.toLowerCase()} selecionados",
+          style: Theme.of(context)
+              .textTheme
+              .labelLarge
+              ?.copyWith(color: Colors.grey[500]),
+        )
+      else
+        Expanded(
+          child: ListView.builder(
+              itemCount: members.length,
+              itemBuilder: (context, index) => ListTile(
+                    title: Text(members[index].username),
+                    trailing: IconButton(icon: Icon(Icons.clear), onPressed: () {
+                      onRemove(members[index].id!);
+                    },),
+                  )),
+        )
     ]);
   }
 }

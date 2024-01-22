@@ -14,6 +14,6 @@ class ProjectMember {
   }
 
   Map<String, dynamic> toFirestore() {
-    return {'userId': userId, 'role': role.name, username: username};
+    return {'userId': userId, 'role': role.name, 'username': username};
   }
 }
