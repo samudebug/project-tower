@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tower_project/blocs/auth_bloc/auth_bloc.dart';
 import 'package:tower_project/blocs/projects_bloc/projects_bloc.dart';
 import 'package:tower_project/ui/pages/project_detail/project_detail_page.dart';
 import 'package:tower_project/ui/pages/project_form/project_form_page.dart';
 import 'package:tower_project/ui/pages/projects/widgets/project_card.dart';
+import 'package:tower_project/ui/widgets/logout_button.dart';
 
 class ProjectsPage extends StatelessWidget {
   const ProjectsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    context.read<ProjectsBloc>().add(LoadProjects());
+    context.read<ProjectsBloc>().add(LoadProjects(userEmail: (context.read<AuthBloc>().state as AuthLogged).userModel.email));
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
@@ -32,19 +34,9 @@ class ProjectsPage extends StatelessWidget {
               )),
           MenuAnchor(
             menuChildren: [
-              MenuItemButton(
-                  child: Row(
-                children: [
-                  const Icon(Icons.logout),
-                  Text(
-                    "Logout",
-                    style: Theme.of(context).textTheme.labelLarge,
-                  ),
-                  const SizedBox(
-                    width: 50,
-                  )
-                ],
-              ))
+              LogoutButton(onPressed: () {
+                context.read<AuthBloc>().add(AuthLogout());
+              },)
             ],
             builder: (context, controller, child) {
               return TextButton(

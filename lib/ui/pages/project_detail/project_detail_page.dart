@@ -4,10 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:projects_repository/projects_repository.dart';
 import 'package:tasks_repository/tasks_repository.dart';
+import 'package:tower_project/blocs/auth_bloc/auth_bloc.dart';
 import 'package:tower_project/ui/pages/project_detail/cubit/project_detail_cubit.dart';
 import 'package:tower_project/ui/pages/project_detail/widgets/task_item.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:tower_project/ui/pages/task_detail/task_detail_page.dart';
+
+import '../../widgets/logout_button.dart';
 
 class ProjectDetailsPage extends StatelessWidget {
   ProjectDetailsPage({super.key, required this.project});
@@ -26,19 +29,9 @@ class ProjectDetailsPage extends StatelessWidget {
         actions: [
           MenuAnchor(
             menuChildren: [
-              MenuItemButton(
-                  child: Row(
-                children: [
-                  const Icon(Icons.logout),
-                  Text(
-                    "Logout",
-                    style: Theme.of(context).textTheme.labelLarge,
-                  ),
-                  const SizedBox(
-                    width: 50,
-                  )
-                ],
-              ))
+              LogoutButton(onPressed: () {
+                context.read<AuthBloc>().add(AuthLogout());
+              },)
             ],
             builder: (context, controller, child) {
               return TextButton(
@@ -132,7 +125,7 @@ class ProjectDetailsPage extends StatelessWidget {
                                                 builder: (context) =>
                                                     TaskDetailPage(
                                                       task: task,
-                                                      projectId: project.id!,
+                                                      project: project,
                                                     )));
                                       }
                                       log(result ?? "");
@@ -163,8 +156,8 @@ class ProjectDetailsPage extends StatelessWidget {
                                                             TaskDetailPage(
                                                               task: state
                                                                   .tasks[index],
-                                                              projectId:
-                                                                  project.id!,
+                                                              project:
+                                                                  project,
                                                             )));
                                               },
                                               child: TaskItem(

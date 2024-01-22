@@ -1,10 +1,15 @@
+import 'dart:developer';
+
+import 'package:auth_repository/auth_repository.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:projects_repository/projects_repository.dart';
 import 'package:storage_repository/storage_repository.dart';
 import 'package:tasks_repository/tasks_repository.dart';
+import 'package:tower_project/blocs/auth_bloc/auth_bloc.dart';
 import 'package:tower_project/blocs/projects_bloc/projects_bloc.dart';
+import 'package:tower_project/ui/pages/login/login_page.dart';
 import 'package:tower_project/ui/pages/projects/projects_page.dart';
 import 'firebase_options.dart';
 
@@ -14,14 +19,27 @@ void main() async {
   final ProjectsRepository projectsRepository = ProjectsRepository();
   final StorageRepository storageRepository = StorageRepository();
   final TaskRepository tasksRepository = TaskRepository();
-  runApp(MyApp(projectsRepository: projectsRepository, storageRepository: storageRepository, tasksRepository: tasksRepository,));
+  final AuthRepository authRepository = AuthRepository();
+  runApp(MyApp(
+    projectsRepository: projectsRepository,
+    storageRepository: storageRepository,
+    tasksRepository: tasksRepository,
+    authRepository: authRepository,
+  ));
 }
 
 class MyApp extends StatelessWidget {
-  MyApp({super.key, required this.projectsRepository, required this.storageRepository, required this.tasksRepository});
+  MyApp(
+      {super.key,
+      required this.projectsRepository,
+      required this.storageRepository,
+      required this.tasksRepository,
+      required this.authRepository});
   ProjectsRepository projectsRepository;
   StorageRepository storageRepository;
   TaskRepository tasksRepository;
+  final AuthRepository authRepository;
+  final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -30,13 +48,20 @@ class MyApp extends StatelessWidget {
         RepositoryProvider(create: (_) => projectsRepository),
         RepositoryProvider(create: (_) => storageRepository),
         RepositoryProvider(create: (_) => tasksRepository),
-
+        RepositoryProvider(create: (_) => authRepository)
       ],
       child: MultiBlocProvider(
-        providers: [BlocProvider(create: (context) => ProjectsBloc(projectsRepository: context.read<ProjectsRepository>()))],
+        providers: [
+          BlocProvider(
+              create: (context) => ProjectsBloc(
+                  projectsRepository: context.read<ProjectsRepository>())),
+          BlocProvider(
+              create: (context) => AuthBloc(authRepository: context.read()))
+        ],
         child: MaterialApp(
           title: 'Flutter Demo',
           themeMode: ThemeMode.dark,
+          navigatorKey: navigatorKey,
           darkTheme: ThemeData(
             // This is the theme of your application.
             //
@@ -53,7 +78,8 @@ class MyApp extends StatelessWidget {
             //
             // This works for code too, not just values: Most code changes can be
             // tested with just a hot reload.
-            colorScheme: ColorScheme.fromSeed(seedColor: Colors.red, brightness: Brightness.dark),
+            colorScheme: ColorScheme.fromSeed(
+                seedColor: Colors.red, brightness: Brightness.dark),
             brightness: Brightness.dark,
             useMaterial3: true,
           ),
@@ -74,11 +100,26 @@ class MyApp extends StatelessWidget {
             // This works for code too, not just values: Most code changes can be
             // tested with just a hot reload.
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.red),
-            
+
             useMaterial3: true,
           ),
           debugShowCheckedModeBanner: false,
-          home: const ProjectsPage(),
+          home: LoginPage(),
+          builder: (context, child) {
+            return BlocListener<AuthBloc, AuthState>(
+                listener: (context, state) {
+                  if (state is AuthUnlogged) {
+                    navigatorKey.currentState?.pushReplacement(
+                        MaterialPageRoute(builder: (context) => LoginPage()));
+                  }
+                  if (state is AuthLogged) {
+                    navigatorKey.currentState?.pushReplacement(
+                        MaterialPageRoute(
+                            builder: (context) => ProjectsPage()));
+                  }
+                },
+                child: child!);
+          },
         ),
       ),
     );

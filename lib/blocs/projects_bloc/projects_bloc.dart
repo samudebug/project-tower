@@ -17,7 +17,7 @@ class ProjectsBloc extends Bloc<ProjectsEvent, ProjectsState> {
   Future<void> loadProjects(LoadProjects event, Emitter<ProjectsState> emit) async {
     try {
       emit(ProjectsLoading());
-      final result = await projectsRepository.getProjects();
+      final result = await projectsRepository.getProjects(event.userEmail);
       emit(ProjectsReady(projects: result));
     } catch (e) {
       log('Error while fetching projects', error: e);
@@ -27,8 +27,7 @@ class ProjectsBloc extends Bloc<ProjectsEvent, ProjectsState> {
 
   Future<void> saveProject(SaveProject event, Emitter<ProjectsState> emit) async {
     try {
-      await projectsRepository.saveProject(event.project);
-      add(LoadProjects());
+      await projectsRepository.saveProject(event.project, event.userId, event.userEmail, event.translators, event.reviwers);
     } catch (e) {
       log('Error while fetching projects', error: e);
       emit(ProjectsFailed());

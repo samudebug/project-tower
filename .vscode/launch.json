@@ -1,0 +1,105 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "tower_project",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "tower_project (profile mode)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "tower_project (release mode)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        },
+        {
+            "name": "auth_repository",
+            "cwd": "packages\\auth_repository",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "auth_repository (profile mode)",
+            "cwd": "packages\\auth_repository",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "auth_repository (release mode)",
+            "cwd": "packages\\auth_repository",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        },
+        {
+            "name": "projects_repository",
+            "cwd": "packages\\projects_repository",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "projects_repository (profile mode)",
+            "cwd": "packages\\projects_repository",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "projects_repository (release mode)",
+            "cwd": "packages\\projects_repository",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        },
+        {
+            "name": "storage_repository",
+            "cwd": "packages\\storage_repository",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "storage_repository (profile mode)",
+            "cwd": "packages\\storage_repository",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "storage_repository (release mode)",
+            "cwd": "packages\\storage_repository",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        },
+        {
+            "name": "tasks_repository",
+            "cwd": "packages\\tasks_repository",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "tasks_repository (profile mode)",
+            "cwd": "packages\\tasks_repository",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "tasks_repository (release mode)",
+            "cwd": "packages\\tasks_repository",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        }
+    ]
+}

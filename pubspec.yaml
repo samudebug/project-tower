@@ -37,6 +37,8 @@ dependencies:
     path: ./packages/storage_repository
   tasks_repository:
     path: ./packages/tasks_repository
+  auth_repository:
+    path: ./packages/auth_repository
 
 
   # The following adds the Cupertino Icons font to your application.

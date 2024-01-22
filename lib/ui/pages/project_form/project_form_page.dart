@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tower_project/blocs/auth_bloc/auth_bloc.dart';
 import 'package:tower_project/ui/pages/project_form/cubit/project_form_cubit.dart';
 import 'package:tower_project/ui/pages/project_form/widgets/members_form.dart';
 import 'package:tower_project/ui/pages/project_form/widgets/name_image_form.dart';
@@ -38,7 +39,7 @@ class _ProjectFormPageState extends State<ProjectFormPage> {
                 curve: Curves.decelerate);
             }
             if (currentPage == 1) {
-              await cubit.saveProject();
+              await cubit.saveProject((context.read<AuthBloc>().state as AuthLogged).userModel.id,(context.read<AuthBloc>().state as AuthLogged).userModel.email);
               Navigator.of(context).pop();
             }
           },
