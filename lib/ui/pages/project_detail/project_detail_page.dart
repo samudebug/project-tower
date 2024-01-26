@@ -1,4 +1,3 @@
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,6 +7,7 @@ import 'package:tower_project/blocs/auth_bloc/auth_bloc.dart';
 import 'package:tower_project/ui/pages/project_detail/cubit/project_detail_cubit.dart';
 import 'package:tower_project/ui/pages/project_detail/widgets/task_item.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:tower_project/ui/pages/project_form/edit_project_form_page.dart';
 import 'package:tower_project/ui/pages/task_detail/task_detail_page.dart';
 
 import '../../widgets/logout_button.dart';
@@ -15,8 +15,12 @@ import '../../widgets/logout_button.dart';
 class ProjectDetailsPage extends StatelessWidget {
   ProjectDetailsPage({super.key, required this.project});
   Project project;
+  late ProjectDetailCubit cubit;
+
   @override
   Widget build(BuildContext context) {
+    cubit = ProjectDetailCubit(taskRepository: context.read())
+      ..init(project.id!);
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
@@ -27,11 +31,16 @@ class ProjectDetailsPage extends StatelessWidget {
           style: Theme.of(context).textTheme.titleLarge,
         ),
         actions: [
+          IconButton(onPressed: () {
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) => EditProjectFormPage(project: project,)));
+          }, icon: Icon(Icons.edit)),
           MenuAnchor(
             menuChildren: [
-              LogoutButton(onPressed: () {
-                context.read<AuthBloc>().add(AuthLogout());
-              },)
+              LogoutButton(
+                onPressed: () {
+                  context.read<AuthBloc>().add(AuthLogout());
+                },
+              )
             ],
             builder: (context, controller, child) {
               return TextButton(
@@ -51,8 +60,7 @@ class ProjectDetailsPage extends StatelessWidget {
         ],
       ),
       body: BlocProvider(
-        create: (context) => ProjectDetailCubit(taskRepository: context.read())
-          ..init(project.id!),
+        create: (context) => cubit,
         child: BlocBuilder<ProjectDetailCubit, ProjectDetailState>(
             builder: (context, state) {
           if (state is ProjectDetailReady) {
@@ -116,19 +124,25 @@ class ProjectDetailsPage extends StatelessWidget {
                                                 Task(
                                                     name: result,
                                                     status: TaskStatus.OPEN,
-                                                    createdAt: DateTime.now()));
+                                                    createdAt: DateTime.now()),
+                                                (context.read<AuthBloc>().state
+                                                        as AuthLogged)
+                                                    .userModel
+                                                    .email);
                                         context
                                             .read<ProjectDetailCubit>()
                                             .init(project.id!);
-                                        Navigator.of(context).push(
+                                        await Navigator.of(context).push(
                                             MaterialPageRoute(
                                                 builder: (context) =>
                                                     TaskDetailPage(
                                                       task: task,
                                                       project: project,
                                                     )));
+                                        context
+                                            .read<ProjectDetailCubit>()
+                                            .init(project.id!);
                                       }
-                                      log(result ?? "");
                                     },
                                     icon: const Icon(Icons.add),
                                     label: Text("Criar Tarefa",
@@ -149,16 +163,18 @@ class ProjectDetailsPage extends StatelessWidget {
                                         itemCount: state.tasks.length,
                                         itemBuilder: (context, index) =>
                                             InkWell(
-                                              onTap: () {
-                                                Navigator.of(context).push(
-                                                    MaterialPageRoute(
+                                              onTap: () async {
+                                                await Navigator.of(context)
+                                                    .push(MaterialPageRoute(
                                                         builder: (context) =>
                                                             TaskDetailPage(
                                                               task: state
                                                                   .tasks[index],
-                                                              project:
-                                                                  project,
+                                                              project: project,
                                                             )));
+                                                context
+                                                    .read<ProjectDetailCubit>()
+                                                    .init(project.id!);
                                               },
                                               child: TaskItem(
                                                 task: state.tasks[index],

@@ -2,11 +2,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 enum TaskStatus {
   OPEN,
+  WORKING,
   AWAITING_REVIEW,
   IN_REVIEW,
   APPROVED,
   CLOSED
 }
+enum RoleInTask { CREATOR, TRANSLATOR, REVIEWER }
 class Task {
   String? id;
   String name;

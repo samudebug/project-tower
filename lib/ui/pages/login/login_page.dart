@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tower_project/ui/pages/login/cubit/login_cubit.dart';
 import 'package:tower_project/ui/pages/login/cubit/login_state.dart';
+import 'package:tower_project/ui/pages/signup/signup_page.dart';
 
 class LoginPage extends StatelessWidget {
   LoginPage({super.key});
@@ -47,7 +48,7 @@ class LoginPage extends StatelessWidget {
                             }
                             return "Verifique o email";
                           },
-                          decoration: InputDecoration(hintText: "Email"),
+                          decoration: const InputDecoration(hintText: "Email"),
                           keyboardType: TextInputType.emailAddress,
                         ),
                       ),
@@ -64,8 +65,9 @@ class LoginPage extends StatelessWidget {
                                 return "É necessário uma senha mais longa";
                               }
                             }
+                            return null;
                           },
-                          decoration: InputDecoration(hintText: "Senha"),
+                          decoration: const InputDecoration(hintText: "Senha"),
                           keyboardType: TextInputType.text,
                           obscureText: true,
                         ),
@@ -87,7 +89,10 @@ class LoginPage extends StatelessWidget {
                             "Login",
                             style: Theme.of(context).textTheme.labelLarge,
                           )),
-                    )
+                    ),
+                    Padding(padding: const EdgeInsets.all(8.0), child: TextButton(child: Text("Cadastre-se"), onPressed: () {
+                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => SignupPage()));
+                    },),)
                   ],
                 ),
               ),

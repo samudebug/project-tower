@@ -1,4 +1,5 @@
-import 'dart:math';
+
+import 'dart:developer';
 
 import 'package:auth_repository/auth_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -19,6 +20,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AuthLoggedIn>(userHasLoggedIn);
     on<AuthHasLoggedOut>(userHasLoggedOut);
     on<AuthLogout>(logout);
+    on<AuthSignup>(signupUser);
   }
 
   final AuthRepository authRepository;
@@ -26,6 +28,16 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   loginUser(AuthLogin event, Emitter<AuthState> emit) async {
     final result = await authRepository.signInUser(email: event.email, password: event.password);
     emit(AuthLogged(userModel: result));
+  }
+
+  signupUser(AuthSignup event, Emitter<AuthState> emit) async {
+    try {
+      final result = await authRepository.signUpUser(email: event.email, password: event.password);
+      emit(AuthLogged(userModel: result));
+    } catch (e) {
+      log("Error while signup user", error: e);
+      rethrow;
+    }
   }
 
   userHasLoggedIn(AuthLoggedIn event, Emitter<AuthState> emit) async {

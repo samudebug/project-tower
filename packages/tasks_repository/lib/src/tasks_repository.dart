@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:projects_repository/projects_repository.dart';
 import 'package:tasks_repository/tasks_repository.dart';
 
 class TaskRepository {
@@ -67,7 +66,7 @@ class TaskRepository {
           .doc(projectId)
           .collection("tasks")
           .doc(taskId)
-          .collection("members")
+          .collection("taskMembers")
           .add(member.toFirestore());
     } catch (e) {
       log("Error while updating tasks", error: e);
@@ -83,13 +82,13 @@ class TaskRepository {
           .doc(projectId)
           .collection("tasks")
           .doc(taskId)
-          .collection("members")
+          .collection("taskMembers")
           .get();
       return result.docs.map((e) {
         final data = e.data();
         return TaskMember(
             id: e.id,
-            role: RoleInProject.values.byName(data['role']),
+            role: RoleInTask.values.byName(data['role']),
             username: data['username']);
       }).toList();
     } catch (e) {
@@ -105,7 +104,7 @@ class TaskRepository {
           .doc(projectId)
           .collection("tasks")
           .doc(taskId)
-          .collection("members")
+          .collection("taskMembers")
           .doc(taskMemberId)
           .delete();
     } catch (e) {

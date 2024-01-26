@@ -1,9 +1,9 @@
-import 'dart:developer';
 
 import 'package:auth_repository/auth_repository.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:messages_repository/messages_repository.dart';
 import 'package:projects_repository/projects_repository.dart';
 import 'package:storage_repository/storage_repository.dart';
 import 'package:tasks_repository/tasks_repository.dart';
@@ -20,11 +20,13 @@ void main() async {
   final StorageRepository storageRepository = StorageRepository();
   final TaskRepository tasksRepository = TaskRepository();
   final AuthRepository authRepository = AuthRepository();
+  final MessagesRepository messagesRepository = MessagesRepository();
   runApp(MyApp(
     projectsRepository: projectsRepository,
     storageRepository: storageRepository,
     tasksRepository: tasksRepository,
     authRepository: authRepository,
+    messagesRepository: messagesRepository
   ));
 }
 
@@ -34,11 +36,13 @@ class MyApp extends StatelessWidget {
       required this.projectsRepository,
       required this.storageRepository,
       required this.tasksRepository,
-      required this.authRepository});
+      required this.authRepository,
+      required this.messagesRepository});
   ProjectsRepository projectsRepository;
   StorageRepository storageRepository;
   TaskRepository tasksRepository;
   final AuthRepository authRepository;
+  final MessagesRepository messagesRepository;
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
   // This widget is the root of your application.
   @override
@@ -48,7 +52,8 @@ class MyApp extends StatelessWidget {
         RepositoryProvider(create: (_) => projectsRepository),
         RepositoryProvider(create: (_) => storageRepository),
         RepositoryProvider(create: (_) => tasksRepository),
-        RepositoryProvider(create: (_) => authRepository)
+        RepositoryProvider(create: (_) => authRepository),
+        RepositoryProvider(create: (_) => messagesRepository),
       ],
       child: MultiBlocProvider(
         providers: [
@@ -59,7 +64,7 @@ class MyApp extends StatelessWidget {
               create: (context) => AuthBloc(authRepository: context.read()))
         ],
         child: MaterialApp(
-          title: 'Flutter Demo',
+          title: 'Project Tower',
           themeMode: ThemeMode.dark,
           navigatorKey: navigatorKey,
           darkTheme: ThemeData(
@@ -115,7 +120,7 @@ class MyApp extends StatelessWidget {
                   if (state is AuthLogged) {
                     navigatorKey.currentState?.pushReplacement(
                         MaterialPageRoute(
-                            builder: (context) => ProjectsPage()));
+                            builder: (context) => const ProjectsPage()));
                   }
                 },
                 child: child!);

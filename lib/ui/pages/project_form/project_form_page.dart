@@ -16,7 +16,7 @@ class ProjectFormPage extends StatefulWidget {
 class _ProjectFormPageState extends State<ProjectFormPage> {
   final PageController controller = PageController();
   int currentPage = 0;
-  late ProjectFormCubit cubit = ProjectFormCubit(projectsBloc: context.read(), storageRepository: context.read());
+  late ProjectFormCubit cubit = ProjectFormCubit(projectsBloc: context.read(), storageRepository: context.read(), projectsRepository: context.read());
   @override
   Widget build(BuildContext context) {
     return PopScope(

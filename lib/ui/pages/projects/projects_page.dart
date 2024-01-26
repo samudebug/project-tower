@@ -6,6 +6,7 @@ import 'package:tower_project/ui/pages/project_detail/project_detail_page.dart';
 import 'package:tower_project/ui/pages/project_form/project_form_page.dart';
 import 'package:tower_project/ui/pages/projects/widgets/project_card.dart';
 import 'package:tower_project/ui/widgets/logout_button.dart';
+import 'package:tower_project/ui/widgets/user_card.dart';
 
 class ProjectsPage extends StatelessWidget {
   const ProjectsPage({super.key});
@@ -34,6 +35,7 @@ class ProjectsPage extends StatelessWidget {
               )),
           MenuAnchor(
             menuChildren: [
+              UserCard(),
               LogoutButton(onPressed: () {
                 context.read<AuthBloc>().add(AuthLogout());
               },)

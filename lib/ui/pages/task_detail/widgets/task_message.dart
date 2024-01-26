@@ -1,33 +1,41 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:messages_repository/messages_repository.dart';
 
 class TaskMessage extends StatelessWidget {
-  const TaskMessage({super.key});
+  const TaskMessage({super.key, required this.message});
+  final Message message;
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       height: 100,
       child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        const CircleAvatar(
+        CircleAvatar(
           backgroundColor: Colors.green,
+          backgroundImage: NetworkImage(message.avatarUrl),
         ),
         Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               children: [
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8),
-                  child: Text("GunsBlazin",
+                  child: Text(message.userId,
                       style: Theme.of(context).textTheme.labelLarge),
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8),
-                  child: Text("Ontem, 16:58",
+                  child: Text(DateFormat("dd/mm/yyyy HH:MM").format(message.createdAt),
                       style: Theme.of(context).textTheme.labelLarge),
                 )
               ],
             ),
-            const Flexible(child: Text("Esta é uma mensagem", maxLines: 3,))
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Flexible(child: Text(message.message, maxLines: 3, textAlign: TextAlign.start,)),
+            )
           ],
         )
       ]),

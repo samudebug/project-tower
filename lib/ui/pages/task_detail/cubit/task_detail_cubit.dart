@@ -8,7 +8,8 @@ class TaskDetailCubit extends Cubit<TaskDetailState> {
       {required this.taskRepository,
       required this.projectsRepository,
       required Task task})
-      : super(TaskDetailState(task, [], [], [], []));
+      : super(TaskDetailState(task, [], [], [], [],
+            TaskMember(role: RoleInTask.CREATOR, username: "")));
   final TaskRepository taskRepository;
   final ProjectsRepository projectsRepository;
   saveTask(String projectId, Task task) async {
@@ -18,9 +19,15 @@ class TaskDetailCubit extends Cubit<TaskDetailState> {
 
   Future<void> fetchTaskMembers(String projectId, String taskId) async {
     final members = await taskRepository.fetchTaskMembers(projectId, taskId);
-    final translators = members.where((element) => element.role == RoleInProject.TRANSLATOR).toList();
-    final reviewers = members.where((element) => element.role == RoleInProject.REVIEWER).toList();
-    emit(state.copyWith(taskTranslators: translators, taskReviewers: reviewers));
+    final translators = members
+        .where((element) => element.role == RoleInTask.TRANSLATOR)
+        .toList();
+    final reviewers = members
+        .where((element) => element.role == RoleInTask.REVIEWER)
+        .toList();
+    final creator = members.firstWhere((e) => e.role == RoleInTask.CREATOR);
+    emit(
+        state.copyWith(taskTranslators: translators, taskReviewers: reviewers, creator: creator));
   }
 
   Future<List<ProjectMember>> fetchMembers(
@@ -45,8 +52,14 @@ class TaskDetailCubit extends Cubit<TaskDetailState> {
     await fetchTaskMembers(projectId, taskId);
   }
 
-  Future<void> removeMember(String projectId, String taskId, String memberId) async {
+  Future<void> removeMember(
+      String projectId, String taskId, String memberId) async {
     await taskRepository.removeTaskMember(projectId, taskId, memberId);
     await fetchTaskMembers(projectId, taskId);
+  }
+
+  Future<void> updateTask(String projectId, Task task) async {
+    final newTask = await taskRepository.updateTask(projectId, task);
+    emit(state.copyWith(task: newTask));
   }
 }

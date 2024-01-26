@@ -9,6 +9,8 @@ class TaskStatusChip extends StatelessWidget {
     switch (status) {
       case TaskStatus.OPEN:
         return const Color(0xFF552EC5);
+      case TaskStatus.WORKING:
+        return const Color(0xFFECECEC);
       case TaskStatus.AWAITING_REVIEW:
         return const Color(0xFFAF2EC5);
       case TaskStatus.IN_REVIEW:
@@ -24,6 +26,8 @@ class TaskStatusChip extends StatelessWidget {
     switch (status) {
       case TaskStatus.OPEN:
         return Icons.file_copy;
+      case TaskStatus.WORKING:
+        return Icons.edit;
       case TaskStatus.AWAITING_REVIEW:
         return Icons.access_time;
       case TaskStatus.IN_REVIEW:
@@ -39,6 +43,8 @@ class TaskStatusChip extends StatelessWidget {
     switch (status) {
       case TaskStatus.OPEN:
         return "Aberta";
+      case TaskStatus.WORKING:
+        return "Traduzindo";
       case TaskStatus.AWAITING_REVIEW:
         return "Aguardando Revisão";
       case TaskStatus.IN_REVIEW:

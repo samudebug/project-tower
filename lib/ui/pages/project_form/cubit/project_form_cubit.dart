@@ -9,20 +9,35 @@ import 'package:tower_project/blocs/projects_bloc/projects_bloc.dart';
 part 'project_form_state.dart';
 
 class ProjectFormCubit extends Cubit<ProjectFormState> {
-  ProjectFormCubit({required this.projectsBloc, required this.storageRepository}) : super(ProjectFormState(translators: [], reviwers: []));
+  ProjectFormCubit({required this.projectsBloc, required this.storageRepository, required this.projectsRepository}) : super(ProjectFormState(translators: [], reviwers: []));
   ProjectsBloc projectsBloc;
   StorageRepository storageRepository;
+  ProjectsRepository projectsRepository;
   TextEditingController nameController = TextEditingController();
   TextEditingController addMemberController = TextEditingController();
+
+  init(Project project) async {
+    nameController.text = project.name;
+    final translators = await projectsRepository.fetchMembersbyType(project.id!, RoleInProject.TRANSLATOR);
+    final reviewers = await projectsRepository.fetchMembersbyType(project.id!, RoleInProject.REVIEWER);
+    emit(state.copyWith(translators: translators, reviwers: reviewers, imageUrl: project.imageUrl, project: project));
+  }
 
   saveProject(String userId, String userEmail) async {
     String imageUrl = "";
     if (state.file != null) {
       final downloadUrl = await storageRepository.uploadFile(state.file!);
       imageUrl = downloadUrl;
+    } else {
+      imageUrl = state.imageUrl ?? "";
     }
-    final project = Project(name: nameController.text, imageUrl: imageUrl, role: RoleInProject.CREATOR);
-    projectsBloc.add(SaveProject(project: project, userId: userId, userEmail: userEmail, translators: state.translators, reviwers: state.reviwers));
+    if (state.project != null) {
+      projectsBloc.add(UpdateProject(project: state.project!.copyWith(name: nameController.text, imageUrl: imageUrl), translators: state.translators, reviwers: state.reviwers));
+    } else {
+
+      final project = Project(name: nameController.text, imageUrl: imageUrl, role: RoleInProject.CREATOR);
+      projectsBloc.add(SaveProject(project: project, userId: userId, userEmail: userEmail, translators: state.translators, reviwers: state.reviwers));
+    }
   }
 
   setImage(File file) async {

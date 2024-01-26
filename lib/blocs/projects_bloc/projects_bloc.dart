@@ -10,6 +10,7 @@ class ProjectsBloc extends Bloc<ProjectsEvent, ProjectsState> {
   ProjectsBloc({required this.projectsRepository}) : super(ProjectsInitial()) {
     on<LoadProjects>(loadProjects);
     on<SaveProject>(saveProject);
+    on<UpdateProject>(updateProject);
   }
 
   final ProjectsRepository projectsRepository;
@@ -28,6 +29,15 @@ class ProjectsBloc extends Bloc<ProjectsEvent, ProjectsState> {
   Future<void> saveProject(SaveProject event, Emitter<ProjectsState> emit) async {
     try {
       await projectsRepository.saveProject(event.project, event.userId, event.userEmail, event.translators, event.reviwers);
+    } catch (e) {
+      log('Error while fetching projects', error: e);
+      emit(ProjectsFailed());
+    }
+  }
+
+  Future<void> updateProject(UpdateProject event, Emitter<ProjectsState> emit) async {
+    try {
+      await projectsRepository.updateProject(event.project, event.translators, event.reviwers);
     } catch (e) {
       log('Error while fetching projects', error: e);
       emit(ProjectsFailed());

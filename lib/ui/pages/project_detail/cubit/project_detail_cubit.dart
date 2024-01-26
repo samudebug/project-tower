@@ -14,8 +14,10 @@ class ProjectDetailCubit extends Cubit<ProjectDetailState> {
     emit(ProjectDetailReady(tasks: result));
   }
 
-  saveTask(String projectId, Task task) async {
+  saveTask(String projectId, Task task, String userEmail) async {
     final result = await taskRepository.saveTask(projectId, task);
+    await taskRepository.addMemberToTask(projectId, result.id!, TaskMember(role: RoleInTask.CREATOR, username: userEmail));
     return result;
+
   }
 }

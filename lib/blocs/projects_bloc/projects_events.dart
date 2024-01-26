@@ -10,10 +10,25 @@ class LoadProjects extends ProjectsEvent {
 }
 
 class SaveProject extends ProjectsEvent {
-  const SaveProject({required this.project, required this.userId, required this.userEmail, required this.translators, required this.reviwers});
+  const SaveProject(
+      {required this.project,
+      required this.userId,
+      required this.userEmail,
+      required this.translators,
+      required this.reviwers});
   final Project project;
   final String userId;
   final String userEmail;
   final List<ProjectMember> translators;
   final List<ProjectMember> reviwers;
+}
+
+class UpdateProject extends ProjectsEvent {
+  final Project project;
+  final List<ProjectMember> translators;
+  final List<ProjectMember> reviwers;
+  const UpdateProject(
+      {required this.project,
+      required this.translators,
+      required this.reviwers});
 }

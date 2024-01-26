@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:projects_repository/projects_repository.dart';
-import 'package:projects_repository/src/models/project.dart';
 
 class ProjectsRepository {
 
@@ -20,6 +19,7 @@ class ProjectsRepository {
       }).toList());
       return projects;
     } catch (e) {
+      print(e);
       log("Error while fetching projects", error: e);
       throw e;
     }
@@ -41,9 +41,20 @@ class ProjectsRepository {
     final result = await projectsCollection.doc(projectId).collection("members").where("role", isEqualTo: role.name).get();
     final members = await Future.wait(result.docs.map((e) async {
       final data = e.data();
-      return ProjectMember(role: role, username: data['username']);
+      return ProjectMember(role: role, username: data['username'], id: e.id);
     }).toList());
     return members;
 
+  }
+
+  Future<Project> updateProject(Project project, List<ProjectMember> translators, List<ProjectMember> reviwers) async {
+    await projectsCollection.doc(project.id!).set(project, SetOptions(merge: true));
+    final membersCollection = projectsCollection.doc(project.id!).collection("members");
+
+    Future.wait([
+      ...translators.where((element) => element.id == null).map((e) async => await membersCollection.add(e.toFirestore())),
+      ...reviwers.where((element) => element.id == null).map((e) async => await membersCollection.add(e.toFirestore())),
+    ]);
+    return project;
   }
 }
