@@ -27,8 +27,7 @@ jobs:
           filename: ProjectTower-${{github.ref_name}}-windows.zip
           directory: build/windows/x64/runner/Release
       - name: Windows Release
-        uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v1        
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
