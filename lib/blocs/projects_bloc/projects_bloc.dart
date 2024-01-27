@@ -29,6 +29,7 @@ class ProjectsBloc extends Bloc<ProjectsEvent, ProjectsState> {
   Future<void> saveProject(SaveProject event, Emitter<ProjectsState> emit) async {
     try {
       await projectsRepository.saveProject(event.project, event.userId, event.userEmail, event.translators, event.reviwers);
+      
     } catch (e) {
       log('Error while fetching projects', error: e);
       emit(ProjectsFailed());

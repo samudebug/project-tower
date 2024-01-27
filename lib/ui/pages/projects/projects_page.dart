@@ -24,6 +24,9 @@ class ProjectsPage extends StatelessWidget {
           style: Theme.of(context).textTheme.titleLarge,
         ),
         actions: [
+          IconButton(onPressed: () {
+            context.read<ProjectsBloc>().add(LoadProjects(userEmail: (context.read<AuthBloc>().state as AuthLogged).userModel.email));
+          }, icon: Icon(Icons.refresh)),
           IconButton(
               onPressed: () {
                 Navigator.of(context).push(

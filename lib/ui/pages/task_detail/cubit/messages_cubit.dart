@@ -10,7 +10,6 @@ class MessagesCubit extends Cubit<MessagesState> {
   TextEditingController messageController = TextEditingController();
   init(String projectId, String taskId) async {
     final messages = await messagesRepository.fetchMessages(projectId, taskId);
-    log("Messages ${messages.length}");
     emit(state.copyWith(messages: messages, projectId: projectId, taskId: taskId));
   }
 

@@ -260,7 +260,7 @@ class _TaskDetailPageState extends State<TaskDetailPage> {
                                         padding: const EdgeInsets.symmetric(
                                             vertical: 8),
                                         child: Text(
-                                            "Aberto em ${DateFormat("dd/mm/yyyy").format(state.task.createdAt)} por ${state.creator.username}",
+                                            "Aberto em ${DateFormat("dd/MM/yyyy").format(state.task.createdAt)} por ${state.creator.username}",
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .titleMedium),

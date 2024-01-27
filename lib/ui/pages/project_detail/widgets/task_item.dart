@@ -14,7 +14,7 @@ class TaskItem extends StatelessWidget {
       ),
       Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Flexible(child: Text(task.name)),
+        child: Text(task.name),
       )
     ],);
   }

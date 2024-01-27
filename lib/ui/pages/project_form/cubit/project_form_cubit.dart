@@ -38,6 +38,7 @@ class ProjectFormCubit extends Cubit<ProjectFormState> {
       final project = Project(name: nameController.text, imageUrl: imageUrl, role: RoleInProject.CREATOR);
       projectsBloc.add(SaveProject(project: project, userId: userId, userEmail: userEmail, translators: state.translators, reviwers: state.reviwers));
     }
+    projectsBloc.add(LoadProjects(userEmail: userEmail));
   }
 
   setImage(File file) async {

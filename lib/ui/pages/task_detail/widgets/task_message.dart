@@ -13,7 +13,7 @@ class TaskMessage extends StatelessWidget {
       child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
         CircleAvatar(
           backgroundColor: Colors.green,
-          backgroundImage: NetworkImage(message.avatarUrl),
+          backgroundImage: message.avatarUrl.isNotEmpty ? NetworkImage(message.avatarUrl) : null,
         ),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -34,7 +34,7 @@ class TaskMessage extends StatelessWidget {
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: Flexible(child: Text(message.message, maxLines: 3, textAlign: TextAlign.start,)),
+              child: Text(message.message, maxLines: 3, textAlign: TextAlign.start,),
             )
           ],
         )
