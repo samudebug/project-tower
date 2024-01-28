@@ -10,7 +10,7 @@ class TaskStatusChip extends StatelessWidget {
       case TaskStatus.OPEN:
         return const Color(0xFF552EC5);
       case TaskStatus.WORKING:
-        return const Color(0xFFECECEC);
+        return Color.fromARGB(255, 255, 0, 179);
       case TaskStatus.AWAITING_REVIEW:
         return const Color(0xFFAF2EC5);
       case TaskStatus.IN_REVIEW:

@@ -27,7 +27,7 @@ class TaskMessage extends StatelessWidget {
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8),
-                  child: Text(DateFormat("dd/mm/yyyy HH:MM").format(message.createdAt),
+                  child: Text(DateFormat("dd/MM/yyyy HH:mm").format(message.createdAt),
                       style: Theme.of(context).textTheme.labelLarge),
                 )
               ],

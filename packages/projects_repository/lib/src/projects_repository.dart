@@ -57,4 +57,8 @@ class ProjectsRepository {
     ]);
     return project;
   }
+
+  Future<void> deleteProject(String projectId) async {
+    await projectsCollection.doc(projectId).delete();
+  }
 }
