@@ -5,13 +5,22 @@ part 'task_detail_state.dart';
 
 class TaskDetailCubit extends Cubit<TaskDetailState> {
   TaskDetailCubit(
-      {required this.taskRepository,
-      required this.projectsRepository,
-      required Task task})
-      : super(TaskDetailState(task, [], [], [], [],
-            TaskMember(role: RoleInTask.CREATOR, username: "")));
+      {required this.taskRepository, required this.projectsRepository})
+      : super(TaskDetailState(
+            creator: TaskMember(role: RoleInTask.CREATOR, username: ""),
+            reviewers: [],
+            taskReviewers: [],
+            taskTranslators: [],
+            translators: []));
   final TaskRepository taskRepository;
   final ProjectsRepository projectsRepository;
+
+  init(Project project ,Task task) async {
+
+    emit(state.copyWith(task: task, project: project));
+    await fetchTaskMembers(project.id!, task.id!);
+  }
+
   saveTask(String projectId, Task task) async {
     await taskRepository.updateTask(projectId, task);
     emit(state.copyWith(task: task));
@@ -26,8 +35,10 @@ class TaskDetailCubit extends Cubit<TaskDetailState> {
         .where((element) => element.role == RoleInTask.REVIEWER)
         .toList();
     final creator = members.firstWhere((e) => e.role == RoleInTask.CREATOR);
-    emit(
-        state.copyWith(taskTranslators: translators, taskReviewers: reviewers, creator: creator));
+    emit(state.copyWith(
+        taskTranslators: translators,
+        taskReviewers: reviewers,
+        creator: creator));
   }
 
   Future<List<ProjectMember>> fetchMembers(

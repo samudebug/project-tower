@@ -1,14 +1,14 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tower_project/blocs/auth_bloc/auth_bloc.dart';
 import 'package:tower_project/ui/pages/project_form/cubit/project_form_cubit.dart';
 import 'package:tower_project/ui/pages/project_form/widgets/members_form.dart';
 import 'package:tower_project/ui/pages/project_form/widgets/name_image_form.dart';
+import 'package:tower_project/ui/widgets/user_menu.dart';
 
 class ProjectFormPage extends StatefulWidget {
   const ProjectFormPage({super.key});
-
+  static const pageName = "project_form";
   @override
   State<ProjectFormPage> createState() => _ProjectFormPageState();
 }
@@ -16,7 +16,6 @@ class ProjectFormPage extends StatefulWidget {
 class _ProjectFormPageState extends State<ProjectFormPage> {
   final PageController controller = PageController();
   int currentPage = 0;
-  late ProjectFormCubit cubit = ProjectFormCubit(projectsBloc: context.read(), storageRepository: context.read(), projectsRepository: context.read());
   @override
   Widget build(BuildContext context) {
     return PopScope(
@@ -27,7 +26,8 @@ class _ProjectFormPageState extends State<ProjectFormPage> {
         }
         if (currentPage == 1) {
           controller.previousPage(
-              duration: const Duration(milliseconds: 500), curve: Curves.decelerate);
+              duration: const Duration(milliseconds: 500),
+              curve: Curves.decelerate);
         }
       },
       child: Scaffold(
@@ -35,11 +35,15 @@ class _ProjectFormPageState extends State<ProjectFormPage> {
           onPressed: () async {
             if (currentPage == 0) {
               controller.nextPage(
-                duration: const Duration(milliseconds: 500),
-                curve: Curves.decelerate);
+                  duration: const Duration(milliseconds: 500),
+                  curve: Curves.decelerate);
             }
             if (currentPage == 1) {
-              await cubit.saveProject((context.read<AuthBloc>().state as AuthLogged).userModel.id,(context.read<AuthBloc>().state as AuthLogged).userModel.email);
+              await context.read<ProjectFormCubit>().saveProject(
+                  (context.read<AuthBloc>().state as AuthLogged).userModel.id,
+                  (context.read<AuthBloc>().state as AuthLogged)
+                      .userModel
+                      .email);
               Navigator.of(context).pop();
             }
           },
@@ -71,50 +75,17 @@ class _ProjectFormPageState extends State<ProjectFormPage> {
             style: Theme.of(context).textTheme.titleLarge,
           ),
           actions: [
-            MenuAnchor(
-              menuChildren: [
-                MenuItemButton(
-                    child: Row(
-                  children: [
-                    const Icon(Icons.logout),
-                    Text(
-                      "Logout",
-                      style: Theme.of(context).textTheme.labelLarge,
-                    ),
-                    const SizedBox(
-                      width: 50,
-                    )
-                  ],
-                ))
-              ],
-              builder: (context, controller, child) {
-                return TextButton(
-                    onPressed: () {
-                      if (controller.isOpen) {
-                        controller.close();
-                      } else {
-                        controller.open();
-                      }
-                    },
-                    child: Icon(
-                      Icons.person,
-                      color: Theme.of(context).iconTheme.color,
-                    ));
-              },
-            )
+            UserMenu()
           ],
         ),
-        body: BlocProvider(
-          create: (_) => cubit,
-          child: PageView(
-            onPageChanged: (page) {
-              setState(() {
-                currentPage = page;
-              });
-            },
-            controller: controller,
-            children: const [NameImageForm(), MembersForm()],
-          ),
+        body: PageView(
+          onPageChanged: (page) {
+            setState(() {
+              currentPage = page;
+            });
+          },
+          controller: controller,
+          children: const [NameImageForm(), MembersForm()],
         ),
       ),
     );

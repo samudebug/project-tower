@@ -4,14 +4,14 @@ import 'package:tower_project/blocs/auth_bloc/auth_bloc.dart';
 import 'package:tower_project/ui/pages/login/cubit/login_state.dart';
 
 class LoginCubit extends Cubit<LoginState> {
-  LoginCubit({required this.bloc}) : super(LoginState());
-  AuthBloc bloc;
+  LoginCubit({required this.authBloc}) : super(LoginState());
+  AuthBloc authBloc;
 
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
   login() {
-    bloc.add(AuthLogin(email: emailController.text, password: passwordController.text));
+    authBloc.add(AuthLogin(email: emailController.text, password: passwordController.text));
   }
   
 }

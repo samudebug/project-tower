@@ -2,18 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tower_project/blocs/auth_bloc/auth_bloc.dart';
 import 'package:tower_project/blocs/projects_bloc/projects_bloc.dart';
+import 'package:tower_project/setup.dart';
 import 'package:tower_project/ui/pages/project_detail/project_detail_page.dart';
 import 'package:tower_project/ui/pages/project_form/project_form_page.dart';
 import 'package:tower_project/ui/pages/projects/widgets/project_card.dart';
 import 'package:tower_project/ui/widgets/logout_button.dart';
 import 'package:tower_project/ui/widgets/user_card.dart';
+import 'package:tower_project/ui/widgets/user_menu.dart';
 
 class ProjectsPage extends StatelessWidget {
   const ProjectsPage({super.key});
+  static const pageName = "projects";
 
   @override
   Widget build(BuildContext context) {
-    context.read<ProjectsBloc>().add(LoadProjects(userEmail: (context.read<AuthBloc>().state as AuthLogged).userModel.email));
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
@@ -24,46 +26,32 @@ class ProjectsPage extends StatelessWidget {
           style: Theme.of(context).textTheme.titleLarge,
         ),
         actions: [
-          IconButton(onPressed: () {
-            context.read<ProjectsBloc>().add(LoadProjects(userEmail: (context.read<AuthBloc>().state as AuthLogged).userModel.email));
-          }, icon: Icon(Icons.refresh)),
           IconButton(
               onPressed: () {
-                Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => const ProjectFormPage()));
+                getIt<ProjectsBloc>().add(LoadProjects(
+                    userEmail: (getIt<AuthBloc>().state as AuthLogged)
+                        .userModel
+                        .email));
+              },
+              icon: Icon(Icons.refresh)),
+          IconButton(
+              onPressed: () {
+                Navigator.of(context).pushNamed(ProjectFormPage.pageName);
               },
               icon: Icon(
                 Icons.add,
                 color: Theme.of(context).iconTheme.color,
               )),
-          MenuAnchor(
-            menuChildren: [
-              UserCard(),
-              LogoutButton(onPressed: () {
-                context.read<AuthBloc>().add(AuthLogout());
-              },)
-            ],
-            builder: (context, controller, child) {
-              return TextButton(
-                  onPressed: () {
-                    if (controller.isOpen) {
-                      controller.close();
-                    } else {
-                      controller.open();
-                    }
-                  },
-                  child: Icon(
-                    Icons.person,
-                    color: Theme.of(context).iconTheme.color,
-                  ));
-            },
-          )
+          UserMenu()
         ],
       ),
       body: BlocBuilder<ProjectsBloc, ProjectsState>(builder: (context, state) {
         if (state is ProjectsReady) {
           if (state.projects.isEmpty) {
-            return const Center(child: Text("Sem projetos cadastrados. Você pode criar um projeto clicando no +"),);
+            return const Center(
+              child: Text(
+                  "Sem projetos cadastrados. Você pode criar um projeto clicando no +"),
+            );
           }
           return GridView.count(
               crossAxisCount: 7,
@@ -72,9 +60,9 @@ class ProjectsPage extends StatelessWidget {
                         padding: const EdgeInsets.all(8.0),
                         child: InkWell(
                             onTap: () => {
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (context) =>
-                                          ProjectDetailsPage(project: e,)))
+                                  Navigator.of(context).pushNamed(
+                                      ProjectDetailsPage.pageName,
+                                      arguments: e)
                                 },
                             child: ProjectCard(project: e)),
                       ))

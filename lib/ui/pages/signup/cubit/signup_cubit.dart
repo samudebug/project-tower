@@ -6,9 +6,9 @@ import 'package:tower_project/blocs/auth_bloc/auth_bloc.dart';
 part 'signup_state.dart';
 
 class SignupCubit extends Cubit<SignupState> {
-  SignupCubit({required this.authRepository, required this.bloc}): super(SignupState());
+  SignupCubit({required this.authRepository, required this.authBloc}): super(SignupState());
   AuthRepository authRepository;
-  AuthBloc bloc;
+  AuthBloc authBloc;
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
@@ -19,7 +19,7 @@ class SignupCubit extends Cubit<SignupState> {
       final email = emailController.text;
       final password = passwordController.text;
       final result = await authRepository.signUpUser(email: email, password: password);
-      bloc.add(AuthLoggedIn(userModel: result));
+      authBloc.add(AuthLoggedIn(userModel: result));
     } catch (e) {
       emit(state.copyWith(errorMessage: e.toString()));
     }

@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:tower_project/blocs/auth_bloc/auth_bloc.dart';
+import 'package:tower_project/setup.dart';
 
 class LogoutButton extends StatelessWidget {
   const LogoutButton({
     super.key,
-    required this.onPressed
   });
-  final Function()? onPressed;
 
   @override
   Widget build(BuildContext context) {
     return MenuItemButton(
-      onPressed: onPressed,
+      onPressed: () {
+        getIt<AuthBloc>().add(AuthLogout());
+      },
         child: Row(
       children: [
         const Icon(Icons.logout),

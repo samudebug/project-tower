@@ -1,132 +1,95 @@
-
-import 'package:auth_repository/auth_repository.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:messages_repository/messages_repository.dart';
-import 'package:projects_repository/projects_repository.dart';
-import 'package:storage_repository/storage_repository.dart';
-import 'package:tasks_repository/tasks_repository.dart';
 import 'package:tower_project/blocs/auth_bloc/auth_bloc.dart';
-import 'package:tower_project/blocs/projects_bloc/projects_bloc.dart';
+import 'package:tower_project/routes.dart';
+import 'package:tower_project/setup.dart';
 import 'package:tower_project/ui/pages/login/login_page.dart';
 import 'package:tower_project/ui/pages/projects/projects_page.dart';
-import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  final ProjectsRepository projectsRepository = ProjectsRepository();
-  final StorageRepository storageRepository = StorageRepository();
-  final TaskRepository tasksRepository = TaskRepository();
-  final AuthRepository authRepository = AuthRepository();
-  final MessagesRepository messagesRepository = MessagesRepository();
-  runApp(MyApp(
-    projectsRepository: projectsRepository,
-    storageRepository: storageRepository,
-    tasksRepository: tasksRepository,
-    authRepository: authRepository,
-    messagesRepository: messagesRepository
-  ));
+  await Setup.init();
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  MyApp(
-      {super.key,
-      required this.projectsRepository,
-      required this.storageRepository,
-      required this.tasksRepository,
-      required this.authRepository,
-      required this.messagesRepository});
-  ProjectsRepository projectsRepository;
-  StorageRepository storageRepository;
-  TaskRepository tasksRepository;
-  final AuthRepository authRepository;
-  final MessagesRepository messagesRepository;
+  MyApp({
+    super.key,
+  });
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+  final RouteObserver<ModalRoute> routeObserver = RouteObserver<ModalRoute>();
+  final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
+      GlobalKey<ScaffoldMessengerState>();
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MultiRepositoryProvider(
-      providers: [
-        RepositoryProvider(create: (_) => projectsRepository),
-        RepositoryProvider(create: (_) => storageRepository),
-        RepositoryProvider(create: (_) => tasksRepository),
-        RepositoryProvider(create: (_) => authRepository),
-        RepositoryProvider(create: (_) => messagesRepository),
-      ],
-      child: MultiBlocProvider(
-        providers: [
-          BlocProvider(
-              create: (context) => ProjectsBloc(
-                  projectsRepository: context.read<ProjectsRepository>())),
-          BlocProvider(
-              create: (context) => AuthBloc(authRepository: context.read()))
-        ],
-        child: MaterialApp(
-          title: 'Project Tower',
-          themeMode: ThemeMode.dark,
-          navigatorKey: navigatorKey,
-          darkTheme: ThemeData(
-            // This is the theme of your application.
-            //
-            // TRY THIS: Try running your application with "flutter run". You'll see
-            // the application has a purple toolbar. Then, without quitting the app,
-            // try changing the seedColor in the colorScheme below to Colors.green
-            // and then invoke "hot reload" (save your changes or press the "hot
-            // reload" button in a Flutter-supported IDE, or press "r" if you used
-            // the command line to start the app).
-            //
-            // Notice that the counter didn't reset back to zero; the application
-            // state is not lost during the reload. To reset the state, use hot
-            // restart instead.
-            //
-            // This works for code too, not just values: Most code changes can be
-            // tested with just a hot reload.
-            colorScheme: ColorScheme.fromSeed(
-                seedColor: Colors.red, brightness: Brightness.dark),
-            brightness: Brightness.dark,
-            useMaterial3: true,
-          ),
-          theme: ThemeData(
-            // This is the theme of your application.
-            //
-            // TRY THIS: Try running your application with "flutter run". You'll see
-            // the application has a purple toolbar. Then, without quitting the app,
-            // try changing the seedColor in the colorScheme below to Colors.green
-            // and then invoke "hot reload" (save your changes or press the "hot
-            // reload" button in a Flutter-supported IDE, or press "r" if you used
-            // the command line to start the app).
-            //
-            // Notice that the counter didn't reset back to zero; the application
-            // state is not lost during the reload. To reset the state, use hot
-            // restart instead.
-            //
-            // This works for code too, not just values: Most code changes can be
-            // tested with just a hot reload.
-            colorScheme: ColorScheme.fromSeed(seedColor: Colors.red),
-
-            useMaterial3: true,
-          ),
-          debugShowCheckedModeBanner: false,
-          home: LoginPage(),
-          builder: (context, child) {
-            return BlocListener<AuthBloc, AuthState>(
-                listener: (context, state) {
-                  if (state is AuthUnlogged) {
-                    navigatorKey.currentState?.pushReplacement(
-                        MaterialPageRoute(builder: (context) => LoginPage()));
-                  }
-                  if (state is AuthLogged) {
-                    navigatorKey.currentState?.pushReplacement(
-                        MaterialPageRoute(
-                            builder: (context) => const ProjectsPage()));
-                  }
-                },
-                child: child!);
-          },
-        ),
+    return MaterialApp(
+      title: 'Project Tower',
+      themeMode: ThemeMode.dark,
+      navigatorKey: navigatorKey,
+      navigatorObservers: [routeObserver],
+      scaffoldMessengerKey: scaffoldMessengerKey,
+      onUnknownRoute: onUnknownRoute,
+      onGenerateRoute: onGenerateRoute,
+      darkTheme: ThemeData(
+        // This is the theme of your application.
+        //
+        // TRY THIS: Try running your application with "flutter run". You'll see
+        // the application has a purple toolbar. Then, without quitting the app,
+        // try changing the seedColor in the colorScheme below to Colors.green
+        // and then invoke "hot reload" (save your changes or press the "hot
+        // reload" button in a Flutter-supported IDE, or press "r" if you used
+        // the command line to start the app).
+        //
+        // Notice that the counter didn't reset back to zero; the application
+        // state is not lost during the reload. To reset the state, use hot
+        // restart instead.
+        //
+        // This works for code too, not just values: Most code changes can be
+        // tested with just a hot reload.
+        colorScheme: ColorScheme.fromSeed(
+            seedColor: Colors.red, brightness: Brightness.dark),
+        brightness: Brightness.dark,
+        useMaterial3: true,
       ),
+      theme: ThemeData(
+        // This is the theme of your application.
+        //
+        // TRY THIS: Try running your application with "flutter run". You'll see
+        // the application has a purple toolbar. Then, without quitting the app,
+        // try changing the seedColor in the colorScheme below to Colors.green
+        // and then invoke "hot reload" (save your changes or press the "hot
+        // reload" button in a Flutter-supported IDE, or press "r" if you used
+        // the command line to start the app).
+        //
+        // Notice that the counter didn't reset back to zero; the application
+        // state is not lost during the reload. To reset the state, use hot
+        // restart instead.
+        //
+        // This works for code too, not just values: Most code changes can be
+        // tested with just a hot reload.
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.red),
+
+        useMaterial3: true,
+      ),
+      debugShowCheckedModeBanner: false,
+      initialRoute: LoginPage.pageName,
+      builder: (context, child) {
+        return BlocListener<AuthBloc, AuthState>(
+            bloc: getIt<AuthBloc>(),
+            listener: (context, state) {
+              if (state is AuthUnlogged) {
+                navigatorKey.currentState
+                    ?.pushNamedAndRemoveUntil(LoginPage.pageName, (_) => false);
+              }
+              if (state is AuthLogged) {
+                navigatorKey.currentState?.pushNamedAndRemoveUntil(
+                    ProjectsPage.pageName, (route) => false);
+              }
+            },
+            child: child!);
+      },
     );
   }
 }
