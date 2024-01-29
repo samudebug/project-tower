@@ -15,6 +15,7 @@ import 'package:tower_project/ui/pages/project_form/cubit/project_form_cubit.dar
 import 'package:tower_project/ui/pages/signup/cubit/signup_cubit.dart';
 import 'package:tower_project/ui/pages/task_detail/cubit/messages_cubit.dart';
 import 'package:tower_project/ui/pages/task_detail/cubit/task_detail_cubit.dart';
+import 'package:tower_project/ui/widgets/profile_info/cubit/profile_info_cubit.dart';
 
 GetIt get getIt => G;
 
@@ -57,6 +58,7 @@ abstract class Setup {
     getIt.registerFactory<SignupCubit>(() => SignupCubit(authRepository: getIt(), authBloc: getIt()));
     getIt.registerFactory<TaskDetailCubit>(() => TaskDetailCubit(taskRepository: getIt(), projectsRepository: getIt()));
     getIt.registerFactory<MessagesCubit>(() => MessagesCubit(messagesRepository: getIt()));
+    getIt.registerFactory<ProfileInfoCubit>(() => ProfileInfoCubit());
   }
 
   @protected

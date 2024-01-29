@@ -9,13 +9,10 @@ class ProjectCard extends StatelessWidget {
     return Column(
       children: [
         Flexible(
-          flex: 9,
-          child: AspectRatio(
-            aspectRatio: 1/2,
-            child: project.imageUrl.isEmpty
-                ? Container(color: Colors.grey[400],)
-                : Image(image: NetworkImage(project.imageUrl), fit: BoxFit.cover,),
-          ),
+          flex: 7,
+          child: project.imageUrl.isEmpty
+              ? Container(color: Colors.grey[400],)
+              : Image(image: NetworkImage(project.imageUrl), fit: BoxFit.fitHeight,),
         ),
         Flexible(
             child: Text(

@@ -21,6 +21,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AuthHasLoggedOut>(userHasLoggedOut);
     on<AuthLogout>(logout);
     on<AuthSignup>(signupUser);
+    on<AuthUpdate>(updateUser);
   }
 
   final AuthRepository authRepository;
@@ -51,6 +52,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   logout(AuthLogout event, Emitter<AuthState> emit) async {
     authRepository.logout();
     emit(AuthUnlogged());
+  }
+
+  updateUser(AuthUpdate event, Emitter<AuthState> emit) async {
+    final result = await authRepository.updateUser(event.userModel);
+    emit(AuthLogged(userModel: result));
   }
 
 }

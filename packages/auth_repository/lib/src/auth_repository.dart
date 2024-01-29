@@ -49,6 +49,11 @@ class AuthRepository {
     }
   }
 
+  Future<UserModel> updateUser(UserModel userModel) async {
+    await instance.currentUser?.updatePhotoURL(userModel.avatarUrl);
+    return UserModel.fromFirebase(instance.currentUser!);
+  }
+
   Future<void> logout() async {
     await instance.signOut();
   }

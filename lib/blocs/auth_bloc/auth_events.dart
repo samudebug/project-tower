@@ -24,6 +24,11 @@ class AuthSignup extends AuthEvent {
   final String password;
 }
 
+class AuthUpdate extends AuthEvent {
+  const AuthUpdate({required this.userModel});
+  final UserModel userModel;
+}
+
 class AuthLogout extends AuthEvent {
   
 }
