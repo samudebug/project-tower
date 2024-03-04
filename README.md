@@ -1,16 +1,26 @@
-# tower_project
+# Project Tower
 
-A new Flutter project.
+O Project Tower é uma ferramenta de gerenciamento de tarefas em projetos para equipes de tradução.
 
-## Getting Started
+## Executando o projeto
 
-This project is a starting point for a Flutter application.
+- Instale o [Flutter](https://docs.flutter.dev/get-started/install)
 
-A few resources to get you started if this is your first Flutter project:
+- Execute `flutter pub get` para instalar as dependências do projeto
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+- Execute `flutter run` para executar o projeto.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+
+É possível baixar as últimas versões, compiladas automaticamente, na aba de [Releases](https://github.com/samudebug/project-tower/releases)
+
+## Imagens do Projeto
+![Screenshot 2024-01-30 234307](https://github.com/samudebug/project-tower/assets/34324655/64c8c72f-8231-49b3-b216-480ce6e4ddfd)
+
+
+![Screenshot 2024-01-30 233556](https://github.com/samudebug/project-tower/assets/34324655/6a267a73-3ebc-420f-ac42-b764bbe6efca)
+
+
+![Screenshot 2024-01-30 233715](https://github.com/samudebug/project-tower/assets/34324655/acc757b8-5202-48fb-a5b5-031885ab110a)
+
+
+![Screenshot 2024-01-30 234109](https://github.com/samudebug/project-tower/assets/34324655/255f15fc-647d-407b-aa58-3674a54be411)
